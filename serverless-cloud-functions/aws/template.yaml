@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: URL Shortener (Lambda + API Gateway + DynamoDB)
+Resources:
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+  ShortenerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: handler.lambda_handler
+      Runtime: python3.11
+      Events:
+        PostUrl:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /shorten
+            Method: post
+        GetUrl:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /r/{code}
+            Method: get
